@@ -30,23 +30,10 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id="introduction">Introduction</h1>
-        <p>Welcome to the SammeVei API documentation. There are more than one API endpoints, serving different purposes, like the PathFinder, which finds published travels matching a route.</p>
-        <p>The main database is using Parse, so familiarize yourself with how this is accessed on your target platform.</p>
-        <p>To use our APIs and the Parse database, several keys are required.</p>
-        <h1 id="authentication">Authentication</h1>
-        <blockquote>
-          <p>To authorize, use this code:</p>
-        </blockquote>
-        <pre class="highlight ruby"><code></code></pre>
-        <pre class="highlight python"><code><span class="hljs-keyword">import</span> kittn
-
-api = kittn.authorize(<span class="hljs-string">'meowmeowmeow'</span>)</code></pre>
-        <pre class="highlight bash"><code><span class="hljs-comment"># With shell, you can just pass the correct header with each request</span>
-curl <span class="hljs-string">"api_endpoint_here"</span>
-  -H <span class="hljs-string">"Authorization: meowmeowmeow"</span></code></pre>
-        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> kittn = <span class="hljs-built_in">require</span>(<span class="hljs-string">'kittn'</span>);
-
-<span class="hljs-keyword">let</span> api = kittn.authorize(<span class="hljs-string">'meowmeowmeow'</span>);</code></pre>
+        <p>Welcome to the SammeVei API documentations. We use several endpoints, serving different purposes. These will be described in detail further down this document.</p>
+        <h1 id="main-database">Main database</h1>
+        <p>Everything is contained in the main database, which is accessed through our Parse server. In this document, we do not go into the specifics of reading or writing data to the Parse server, as this is very well documented at <a href="http://parseplatform.org">http://parseplatform.org</a>.</p>
+        <p>For iOS we are obviously using the Parse iOS SDK, and for Android we&#39;ll use the Parse Android SDK.</p>
         <blockquote>
           <p>Make sure to replace <code>meowmeowmeow</code> with your API key.</p>
         </blockquote>
@@ -54,15 +41,23 @@ curl <span class="hljs-string">"api_endpoint_here"</span>
         <p>Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:</p>
         <p><code>Authorization: meowmeowmeow</code></p>
         <aside class="notice"> You must replace <code>meowmeowmeow</code> with your personal API key. </aside>
+        <h1 id="endpoints">Endpoints</h1>
+        <h2 id="database">Database</h2>
+        <p>We are using Parse with MongoDb as our main storage engine. </p>
+        <h2 id="pathfinder">PathFinder</h2>
+        <p>We have built this route matching API to easily find travels matching a specific route from A to B, with the direction and time filters.</p>
+        <h2 id="io">IO</h2>
+        <p>Websocket interface for pushing communications between users, for instance when requesting a ride or responding to a request. </p>
+        <p>All communication between users have Push notifications as a fallback, in case we were unable to deliver the message when the recipient is offline or have the app in the background.</p>
         <h1 id="pathfinder">Pathfinder</h1>
         <p>Welcome to the SammeVei API documentation. There are more than one API endpoints, serving different purposes, like the PathFinder, which finds published travels matching a route.</p>
         <p>The main database is using Parse, so familiarize yourself with how this is accessed on your target platform.</p>
         <p>To use our APIs and the Parse database, several keys are required.</p>
         <h1 id="journeys">Journeys</h1>
         <h2 id="get-all-journeys">Get all Journeys</h2>
-        <pre class="highlight bash"><code>curl <span class="hljs-string">"http://example.com/api/kittens"</span>
-  -H <span class="hljs-string">"Authorization: meowmeowmeow"</span></code></pre>
-        <pre class="highlight javascript"><code>/api/<span class="hljs-number">1</span>/journeys</code></pre>
+        <pre class="highlight bash"><code>curl <span class="hljs-string">"https://pathfinder.sammevei.no/api/1/journeys"</span>
+  -H <span class="hljs-string">"X-PFAPI-KEY: &lt;your-pathfinder-api-key&gt;"</span>
+  -H <span class="hljs-string">"X-SVUID-KEY: &lt;user-id&gt;"</span></code></pre>
         <blockquote>
           <p>The above command returns JSON structured like this:</p>
         </blockquote>
@@ -109,20 +104,8 @@ curl <span class="hljs-string">"api_endpoint_here"</span>
         </table>
         <aside class="success"> Remember — a happy kitten is an authenticated kitten! </aside>
         <h2 id="get-a-specific-journey">Get a specific Journey</h2>
-        <pre class="highlight ruby"><code><span class="hljs-keyword">require</span> <span class="hljs-string">'kittn'</span>
-
-api = Kittn::APIClient.authorize!(<span class="hljs-string">'meowmeowmeow'</span>)
-api.kittens.get(<span class="hljs-number">2</span>)</code></pre>
-        <pre class="highlight python"><code><span class="hljs-keyword">import</span> kittn
-
-api = kittn.authorize(<span class="hljs-string">'meowmeowmeow'</span>)
-api.kittens.get(<span class="hljs-number">2</span>)</code></pre>
-        <pre class="highlight bash"><code>curl <span class="hljs-string">"http://example.com/api/kittens/2"</span>
-  -H <span class="hljs-string">"Authorization: meowmeowmeow"</span></code></pre>
-        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> kittn = <span class="hljs-built_in">require</span>(<span class="hljs-string">'kittn'</span>);
-
-<span class="hljs-keyword">let</span> api = kittn.authorize(<span class="hljs-string">'meowmeowmeow'</span>);
-<span class="hljs-keyword">let</span> max = api.kittens.get(<span class="hljs-number">2</span>);</code></pre>
+        <pre class="highlight bash"><code>curl <span class="hljs-string">"https://pathfinder.sammevei.no/api/1/journey/&lt;ID&gt;"</span>
+  -H <span class="hljs-string">"X-PFAPI-KEY: &lt;your-pathfinder-api-key&gt;"</span></code></pre>
         <blockquote>
           <p>The above command returns JSON structured like this:</p>
         </blockquote>
@@ -134,7 +117,7 @@ api.kittens.get(<span class="hljs-number">2</span>)</code></pre>
   <span class="hljs-attr">"cuteness"</span>: <span class="hljs-number">10</span>
 }</code></pre>
         <p>This endpoint retrieves a specific journey, including it&#39;s route information.</p>
-        <aside class="warning">Inside HTML code blocks like this one, you can&#39;t use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+        <!--aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside-->
         <h3 id="http-request">HTTP Request</h3>
         <p><code>GET https://pathfinder.sammevei.no/api/1/journeys/&lt;ID&gt;</code></p>
         <h3 id="url-parameters">URL Parameters</h3>
@@ -149,6 +132,104 @@ api.kittens.get(<span class="hljs-number">2</span>)</code></pre>
             <tr>
               <td>ID</td>
               <td>The ID of the Journey to retrieve</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="count-active-journeys">Count active Journeys</h2>
+        <h3 id="http-request">HTTP REQUEST</h3>
+        <pre class="highlight bash"><code>curl <span class="hljs-string">"https://pathfinder.sammevei.no/api/1/journey/&lt;ID&gt;"</span>
+  -H <span class="hljs-string">"X-PFAPI-KEY: &lt;your-pathfinder-api-key&gt;"</span></code></pre>
+        <blockquote>
+          <p>The above command should return a JSON structure:</p>
+        </blockquote>
+        <pre class="highlight json"><code>{
+  <span class="hljs-attr">"count"</span>: <span class="hljs-number">33</span>
+}</code></pre>
+        <p><code>GET https://pathfinder.sammevei.no/api/1/journeys/count</code></p>
+        <h2 id="find-journeys-matching-a-route">Find journeys matching a route</h2>
+        <h3 id="http-request">HTTP REQUEST</h3>
+        <pre class="highlight bash"><code>curl <span class="hljs-string">"https://pathfinder.sammevei.no/api/1/nearest?start=10.556252685017796%2C59.89331885130724&amp;end=10.742904109418504%2C59.909396363722465&amp;distance=12685&amp;limit=5"</span>
+  -H <span class="hljs-string">"X-PFAPI-KEY: &lt;your-pathfinder-api-key&gt;"</span></code></pre>
+        <blockquote>
+          <p>The above command should return a JSON structured list of journeys, including their route:</p>
+        </blockquote>
+        <pre class="highlight json"><code>[
+  {
+    <span class="hljs-attr">"_id"</span>:<span class="hljs-string">"XpnOXi7P9J"</span>,
+    <span class="hljs-attr">"match"</span>:{
+      <span class="hljs-attr">"start"</span>:<span class="hljs-number">208.1147267525037</span>,
+      <span class="hljs-attr">"end"</span>:<span class="hljs-number">323.6536256919642</span>
+    },
+    <span class="hljs-attr">"direction"</span>:<span class="hljs-number">1</span>,
+    <span class="hljs-attr">"distance"</span>:<span class="hljs-number">27503.7</span>,
+    <span class="hljs-attr">"duration"</span>:<span class="hljs-number">1593.3</span>,
+    <span class="hljs-attr">"starttime"</span>:<span class="hljs-string">"2017-03-14T15:30:00.000Z"</span>,
+    <span class="hljs-attr">"departure"</span>:<span class="hljs-string">"Departure street, City"</span>,
+    <span class="hljs-attr">"destination"</span>:<span class="hljs-string">"Destination street, City"</span>,
+    <span class="hljs-attr">"start"</span>:{
+      <span class="hljs-attr">"coordinates"</span>:[<span class="hljs-number">10.48751720000003</span>,<span class="hljs-number">59.8693366</span>],
+      <span class="hljs-attr">"type"</span>:<span class="hljs-string">"Point"</span>
+    },
+    <span class="hljs-attr">"end"</span>:{
+      <span class="hljs-attr">"coordinates"</span>:[<span class="hljs-number">10.86910896795517</span>,<span class="hljs-number">59.92490572985376</span>],
+      <span class="hljs-attr">"type"</span>:<span class="hljs-string">"Point"</span>
+    },
+    <span class="hljs-attr">"balance"</span>:{
+      <span class="hljs-attr">"start"</span>:{
+        <span class="hljs-attr">"index"</span>:<span class="hljs-number">122</span>,
+        <span class="hljs-attr">"distance"</span>:<span class="hljs-number">210.40042447625717</span>
+      },
+      <span class="hljs-attr">"end"</span>:{
+        <span class="hljs-attr">"index"</span>:<span class="hljs-number">398</span>,
+        <span class="hljs-attr">"distance"</span>:<span class="hljs-number">323.6536256919642</span>
+      }
+    },
+    <span class="hljs-attr">"driver"</span>:{
+      <span class="hljs-attr">"id"</span>:<span class="hljs-string">"AxGYzzHidD"</span>,
+      <span class="hljs-attr">"firstname"</span>:<span class="hljs-string">"John"</span>,
+      <span class="hljs-attr">"lastname"</span>:<span class="hljs-string">"Smith"</span>,
+    },
+    <span class="hljs-attr">"route"</span>:{
+      <span class="hljs-attr">"type"</span>:<span class="hljs-string">"LineString"</span>,
+      <span class="hljs-attr">"coordinates"</span>:[[<span class="hljs-number">10.488024</span>,<span class="hljs-number">59.869358</span>],[<span class="hljs-number">10.48786</span>,<span class="hljs-number">59.870368</span>],...,[<span class="hljs-number">10.868789</span>,<span class="hljs-number">59.924981</span>]]
+    }
+  }
+]</code></pre>
+        <p><code>GET https://pathfinder.sammevei.no/api/1/nearest?start=10.556252685017796%2C59.89331885130724&amp;end=10.742904109418504%2C59.909396363722465&amp;distance=12685&amp;limit=5</code></p>
+        <h3 id="url-parameters">URL Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Description</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>start</td>
+              <td>The departure geopoint, given as lat,lng</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>end</td>
+              <td>The destination geopoint, given as lat,lng</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>distance</td>
+              <td>Length of route between our given start and end points. If not given, this is calculated as the direct distance between start and end point.</td>
+              <td>Calculated</td>
+            </tr>
+            <tr>
+              <td>limit</td>
+              <td>Limit the number of returned matches.</td>
+              <td>3</td>
+            </tr>
+            <tr>
+              <td>ts</td>
+              <td>Optional Timestamp. If provided, we only match against journeys starting at the given ISO date (2017-02-28T16:30:00Z)</td>
+              <td>Current time - 60 min</td>
             </tr>
           </tbody>
         </table>
